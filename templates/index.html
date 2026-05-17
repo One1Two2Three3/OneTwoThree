@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FULL SENSE | Manager Dashboard 2026</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --fs-orange: #ff4655;
+            --fs-shop-orange: #ff5000;
+            --dark-bg: #0b0e11;
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: #ffffff;
+            font-family: 'Kanit', sans-serif;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        /* Navbar */
+        .fs-header {
+            background-color: #ffffff;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .shop-btn {
+            background-color: var(--fs-shop-orange);
+            color: white;
+            padding: 10px 25px;
+            text-decoration: none;
+            font-weight: 900;
+            border-radius: 8px;
+        }
+
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .nav-link-custom {
+            color: #111111;
+            text-decoration: none;
+            font-weight: 800;
+            transition: 0.2s;
+        }
+
+        .nav-link-custom:hover {
+            color: var(--fs-orange);
+        }
+
+        .header-logo {
+            height: 50px;
+        }
+
+        /* Banner */
+        .main-banner {
+            width: 100%;
+            height: 550px;
+            background-image:
+                linear-gradient(to bottom, rgba(11, 14, 17, 0) 50%, var(--dark-bg) 100%),
+                url("{{ url_for('static', filename='images/team_banner.jpg.png') }}");
+            background-size: cover;
+            background-position: center top;
+        }
+
+        .dashboard-content {
+            margin-top: -80px;
+            position: relative;
+            z-index: 10;
+            padding-bottom: 80px;
+        }
+
+        .section-title {
+            font-weight: 900;
+            font-size: 1.7rem;
+            border-left: 6px solid var(--fs-orange);
+            padding-left: 15px;
+        }
+
+        /* PLAYER CARD */
+        .player-card {
+            position: relative;
+            background: linear-gradient(135deg, rgba(26,32,39,0.96), rgba(12,15,18,0.95));
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 20px;
+            padding: 22px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            overflow: hidden;
+            transition: all 0.35s ease;
+        }
+
+        .player-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at top left, rgba(255,70,85,0.18), transparent 60%);
+            opacity: 0.85;
+            z-index: 0;
+        }
+
+        .player-card::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 6px;
+            height: 100%;
+            background: linear-gradient(to bottom, #ff4655, #ff8a00);
+            opacity: 0.9;
+            z-index: 0;
+        }
+
+        .player-card:hover {
+            transform: translateY(-6px) scale(1.01);
+            border-color: rgba(255,70,85,0.7);
+            box-shadow: 0 12px 35px rgba(255, 70, 85, 0.25);
+        }
+
+        .card-clickable-area {
+            display: flex;
+            align-items: center;
+            flex-grow: 1;
+            position: relative;
+            z-index: 2;
+        }
+
+        .img-box {
+            width: 125px;
+            height: 125px;
+            border-radius: 18px;
+            overflow: hidden;
+            background: rgba(0,0,0,0.35);
+            border: 2px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+            transition: 0.3s;
+            flex-shrink: 0;
+        }
+
+        .player-card:hover .img-box {
+            border-color: rgba(255,70,85,0.75);
+            box-shadow: 0 12px 30px rgba(255,70,85,0.2);
+        }
+
+        .img-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .info-box {
+            margin-left: 25px;
+            flex-grow: 1;
+        }
+
+        .nickname {
+            font-size: 2.4rem;
+            font-weight: 900;
+            margin: 0;
+            line-height: 1.05;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .real-name {
+            font-size: 0.95rem;
+            color: rgba(255,255,255,0.65);
+            margin-bottom: 12px;
+        }
+
+        .role-badge {
+            display: inline-block;
+            background: rgba(255,70,85,0.15);
+            border: 1px solid rgba(255,70,85,0.5);
+            color: #ff6b77;
+            font-weight: 900;
+            padding: 6px 14px;
+            border-radius: 14px;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            margin-bottom: 14px;
+            text-transform: uppercase;
+        }
+
+        .stat-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 22px;
+        }
+
+        .stat-label {
+            color: rgba(255,255,255,0.55);
+            font-size: 0.75rem;
+            font-weight: 900;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .stat-val {
+            font-size: 1.15rem;
+            font-weight: 900;
+            margin: 0;
+        }
+
+        .match-highlight {
+            color: #ffb300;
+            text-shadow: 0 0 8px rgba(255,179,0,0.35);
+        }
+
+        /* Remove fix */
+        .player-actions {
+            position: relative;
+            z-index: 3;
+            flex-shrink: 0;
+            min-width: 120px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .remove-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            white-space: nowrap;
+            background: rgba(255,70,85,0.15);
+            border: 1px solid rgba(255,70,85,0.45);
+            color: #ff6b77;
+            border-radius: 14px;
+            font-weight: 900;
+            padding: 6px 16px;
+            transition: 0.25s;
+            text-decoration: none;
+        }
+
+        .remove-btn:hover {
+            background: rgba(255,70,85,0.25);
+            border-color: rgba(255,70,85,0.8);
+            color: white;
+        }
+
+        /* Match Center PREMIUM UI */
+        .match-widget {
+            position: relative;
+            background: linear-gradient(135deg, rgba(255,70,85,0.95), rgba(20,20,25,0.9));
+            border-radius: 22px;
+            padding: 32px;
+            text-align: center;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.15);
+            box-shadow: 0 18px 45px rgba(0,0,0,0.65);
+        }
+
+        .match-widget::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at top left, rgba(255,255,255,0.25), transparent 55%);
+            opacity: 0.6;
+            z-index: 0;
+        }
+
+        .match-widget::after {
+            content: "";
+            position: absolute;
+            top: -120px;
+            right: -120px;
+            width: 260px;
+            height: 260px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 50%;
+            filter: blur(50px);
+            z-index: 0;
+        }
+
+        .match-title {
+            font-size: 2rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .match-subtitle {
+            font-size: 0.85rem;
+            font-weight: 900;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.75);
+            position: relative;
+            z-index: 2;
+        }
+
+        .match-date {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 8px 16px;
+            border-radius: 14px;
+            background: rgba(0,0,0,0.35);
+            border: 1px solid rgba(255,255,255,0.2);
+            font-weight: 900;
+            letter-spacing: 1px;
+            color: white;
+            font-size: 1rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .match-score-box {
+            margin-top: 18px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 14px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .match-score {
+            font-size: 2.4rem;
+            font-weight: 900;
+            padding: 10px 20px;
+            border-radius: 16px;
+            background: rgba(0,0,0,0.35);
+            border: 1px solid rgba(255,255,255,0.15);
+            min-width: 85px;
+        }
+
+        .match-score-divider {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: rgba(255,255,255,0.8);
+        }
+
+        .match-tournament {
+            margin-top: 14px;
+            font-weight: 900;
+            font-size: 1.05rem;
+            color: rgba(255,255,255,0.95);
+            position: relative;
+            z-index: 2;
+        }
+
+        .match-tier {
+            display: inline-block;
+            margin-left: 10px;
+            padding: 6px 14px;
+            border-radius: 14px;
+            background: rgba(0,0,0,0.35);
+            border: 1px solid rgba(255,255,255,0.25);
+            font-size: 0.85rem;
+            font-weight: 900;
+            letter-spacing: 1px;
+            color: #ffe066;
+        }
+
+        /* Recent Results */
+        .result-card {
+            background: rgba(26, 32, 39, 0.9);
+            border-radius: 18px;
+            padding: 25px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 14px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* Tournament Card */
+        .tour-card {
+            background: rgba(26, 32, 39, 0.9);
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.12);
+            padding: 18px;
+            margin-bottom: 15px;
+            transition: 0.25s;
+        }
+
+        .tour-card:hover {
+            border-color: rgba(255,70,85,0.6);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255,70,85,0.15);
+        }
+
+        .tier-badge {
+            font-weight: 900;
+            letter-spacing: 1px;
+        }
+
+        /* Staff Card */
+        .staff-card {
+            background: rgba(26, 32, 39, 0.9);
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.12);
+            padding: 18px;
+            margin-bottom: 15px;
+            transition: 0.25s;
+        }
+
+        .staff-card:hover {
+            border-color: rgba(255,70,85,0.6);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255,70,85,0.15);
+        }
+
+        .staff-status {
+            font-size: 0.75rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 6px 10px;
+            border-radius: 10px;
+        }
+
+        .status-active {
+            background: rgba(25, 135, 84, 0.25);
+            border: 1px solid rgba(25, 135, 84, 0.6);
+            color: #34d399;
+        }
+
+        .status-inactive {
+            background: rgba(220, 53, 69, 0.25);
+            border: 1px solid rgba(220, 53, 69, 0.6);
+            color: #ff6b77;
+        }
+
+        /* Modal */
+        .modal-content {
+            background-color: #12171d;
+            border: 2px solid var(--fs-orange);
+            border-radius: 20px;
+            color: #ffffff;
+        }
+
+        .modal-header {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .form-control, .form-select {
+            background-color: #1a2027;
+            border: 1px solid rgba(255,255,255,0.2);
+            color: #fff;
+        }
+
+        .form-control:focus, .form-select:focus {
+            background-color: #222b35;
+            border-color: var(--fs-orange);
+            box-shadow: 0 0 10px rgba(255, 70, 85, 0.5);
+            color: #fff;
+        }
+
+        .pop-stat-input {
+            background-color: #1a2027 !important;
+            border: 1px solid rgba(255, 70, 85, 0.3) !important;
+            color: var(--fs-orange) !important;
+            font-size: 1.6rem !important;
+            font-weight: 900 !important;
+            border-radius: 10px !important;
+        }
+
+        .hub-topbar {
+            background: linear-gradient(135deg, rgba(255,70,85,0.18), rgba(0,0,0,0.55));
+            border-radius: 18px;
+            border: 1px solid rgba(255,70,85,0.35);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+
+        .match-label {
+            font-size: 0.75rem;
+            font-weight: 900;
+            color: rgba(255,255,255,0.6);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="fs-header">
+    <div><a href="#" class="shop-btn">SHOP</a></div>
+    <nav class="nav-menu">
+        <a href="#" class="nav-link-custom">HOME</a>
+        <a href="#" class="nav-link-custom">ABOUT</a>
+        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="header-logo">
+        <a href="#" class="nav-link-custom">TEAMS</a>
+        <a href="#" class="nav-link-custom">CONTACT</a>
+    </nav>
+    <div style="color:#111; font-weight: bold;">🔍 👤</div>
+</header>
+
+<div class="main-banner"></div>
+
+<div class="container dashboard-content">
+    <div class="row">
+
+        <!-- TEAM ROSTER -->
+        <div class="col-lg-8">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3 class="section-title m-0">Team Roster 2026</h3>
+                <button class="btn btn-danger fw-bold px-4" data-bs-toggle="modal" data-bs-target="#addPlayerModal">
+                    + ADD NEW PLAYER
+                </button>
+            </div>
+
+            <div class="row">
+                {% for player in players %}
+                <div class="col-md-12">
+                    <div class="player-card"
+                         onclick="openPlayerDetailModal('{{ player.player_id }}', '{{ player.nickname }}', '{{ player.real_name }}', '{{ player.role }}', '{{ player.main_agent }}', '{{ player.image_url }}')">
+
+                        <div class="card-clickable-area">
+                            <div class="img-box">
+                                <img src="{{ url_for('static', filename='images/' + player.image_url) }}" alt="{{ player.nickname }}">
+                            </div>
+
+                            <div class="info-box">
+                                <p class="nickname">{{ player.nickname }}</p>
+                                <p class="real-name">{{ player.real_name }}</p>
+
+                                <span class="role-badge">{{ player.role }}</span>
+
+                                <div class="stat-group">
+                                    <div>
+                                        <p class="stat-label">Main Agent</p>
+                                        <p class="stat-val">{{ player.main_agent }}</p>
+                                    </div>
+
+                                    <div>
+                                        <p class="stat-label">Selected Match</p>
+                                        <p class="stat-val match-highlight" id="card_match_{{ player.player_id }}">-</p>
+                                    </div>
+
+                                    <div>
+                                        <p class="stat-label">Kills</p>
+                                        <p class="stat-val" id="card_kills_{{ player.player_id }}">-</p>
+                                    </div>
+
+                                    <div>
+                                        <p class="stat-label">ACS</p>
+                                        <p class="stat-val" id="card_acs_{{ player.player_id }}">-</p>
+                                    </div>
+
+                                    <div>
+                                        <p class="stat-label">K/D</p>
+                                        <p class="stat-val" id="card_kd_{{ player.player_id }}">-</p>
+                                    </div>
+
+                                    <div>
+                                        <p class="stat-label">HS%</p>
+                                        <p class="stat-val" id="card_hs_{{ player.player_id }}">-</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="player-actions" onclick="event.stopPropagation();">
+                            <a href="/player/delete/{{ player.player_id }}"
+                               class="remove-btn"
+                               onclick="return confirm('คุณต้องการลบนักกีฬานี้ออกจากระบบ?')">
+                                ✖ Remove
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+
+        <!-- RIGHT PANEL -->
+        <div class="col-lg-4">
+
+            <h3 class="section-title mb-4">Match Center</h3>
+
+            {% if matches and matches|length > 0 %}
+                <div class="match-widget mb-4">
+                    <div class="match-subtitle">LATEST MATCH</div>
+
+                    <div class="match-title mt-2">
+                        FS VS {{ matches[0].opponent }}
+                    </div>
+
+                    <div class="match-tournament">
+                        🏆 {{ matches[0].tournament_name }}
+                        <span class="match-tier">{{ matches[0].tournament_tier }}</span>
+                    </div>
+
+                    <div class="match-date">
+                        📅 {{ matches[0].match_date }}
+                    </div>
+
+                    <div class="match-score-box">
+                        <div class="match-score">{{ matches[0].fs_score }}</div>
+                        <div class="match-score-divider">:</div>
+                        <div class="match-score">{{ matches[0].opp_score }}</div>
+                    </div>
+                </div>
+
+                <div class="result-card mb-4">
+                    <h5 class="fw-bold text-warning mb-3">Recent Results</h5>
+
+                    {% for m in matches[0:5] %}
+                    <div class="result-row"
+                            {% if loop.last %}style="border:none;"{% endif %}>
+                        <div>
+                            <div class="fw-bold text-white">vs {{ m.opponent }}</div>
+                            <div class="text-white-50 small">
+                                {{ m.match_date }} | {{ m.tournament_name }}
+                            </div>
+                        </div>
+
+                        <div class="fw-bold">
+                            {% if m.fs_score > m.opp_score %}
+                                <span class="text-success">{{ m.fs_score }} - {{ m.opp_score }}</span>
+                            {% elif m.fs_score < m.opp_score %}
+                                <span class="text-danger">{{ m.fs_score }} - {{ m.opp_score }}</span>
+                            {% else %}
+                                <span class="text-warning">{{ m.fs_score }} - {{ m.opp_score }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="result-card text-center text-white-50">
+                    No match data found.
+                </div>
+            {% endif %}
+
+
+            <h3 class="section-title mb-3">Tournament Tracker</h3>
+
+            {% if tournaments %}
+                {% for t in tournaments %}
+                <div class="tour-card">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="fw-bold text-white" style="font-size: 1.05rem;">
+                            🏆 {{ t.name }}
+                        </span>
+
+                        <span class="badge bg-danger tier-badge">
+                            {{ t.tier }}
+                        </span>
+                    </div>
+
+                    <div class="text-white-50 small fw-bold">
+                        📍 Location: <span class="text-white">{{ t.location }}</span>
+                    </div>
+
+                    <div class="text-white-50 small">
+                        Tournament ID: #{{ t.tournament_id }}
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="tour-card text-center text-white-50">
+                    ไม่มีข้อมูล Tournament ในระบบ
+                </div>
+            {% endif %}
+
+
+            <h3 class="section-title mt-4 mb-3">Staff Hub</h3>
+
+            {% if staff %}
+                {% for s in staff %}
+                <div class="staff-card">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="fw-bold text-white" style="font-size: 1.05rem;">
+                            👤 {{ s.name }}
+                        </span>
+
+                        {% if s.status|lower == 'active' %}
+                            <span class="staff-status status-active">ACTIVE</span>
+                        {% else %}
+                            <span class="staff-status status-inactive">{{ s.status }}</span>
+                        {% endif %}
+                    </div>
+
+                    <div class="text-white-50 small fw-bold">
+                        🎯 Position: <span class="text-white">{{ s.position }}</span>
+                    </div>
+
+                    <div class="text-white-50 small">
+                        Staff ID: #{{ s.staff_id }}
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="staff-card text-center text-white-50">
+                    ไม่มีข้อมูล Staff ในระบบ
+                </div>
+            {% endif %}
+
+        </div>
+
+    </div>
+</div>
+
+
+<!-- PLAYER DETAIL MODAL -->
+<div class="modal fade" id="playerDetailModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title text-warning fw-bold">📊 PLAYER HUB: MATCH STATS VIEW / EDIT</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+
+            <form action="/player/update" method="POST" enctype="multipart/form-data">
+                <div class="modal-body p-4">
+
+                    <div class="row text-center mb-4 p-4 g-3 hub-topbar">
+                        <div class="col-12 mb-2 d-flex flex-wrap align-items-center justify-content-center gap-3">
+
+                            <span class="badge bg-danger px-3 py-2 fw-bold">SELECT MATCH</span>
+
+                            <select class="form-select form-select-sm d-inline-block text-center fw-bold text-warning"
+                                    id="edit_stat_id"
+                                    name="stat_id"
+                                    style="width: 420px; border-color: var(--fs-orange);"
+                                    onchange="onMatchSelectionChange(this.value)">
+                            </select>
+
+                            <span class="match-label">OPPONENT</span>
+
+                            <span id="opponent_display"
+                                  class="badge bg-dark px-4 py-2 fw-bold"
+                                  style="border:1px solid rgba(255,70,85,0.4);
+                                         color: var(--fs-orange);
+                                         font-size: 1rem;
+                                         min-width: 140px;">
+                                -
+                            </span>
+
+                            <input type="hidden" id="edit_opponent" name="opponent">
+                        </div>
+
+                        <div class="col-12 d-flex justify-content-center gap-3 mb-2">
+                            <span class="badge bg-secondary px-3 py-2 fw-bold" id="tournament_display">
+                                🏆 Tournament: -
+                            </span>
+                            <span class="badge bg-dark px-3 py-2 fw-bold text-info" id="tournament_location_display">
+                                📍 Location: -
+                            </span>
+                        </div>
+
+                        <div class="col-3">
+                            <small class="text-white-50 d-block mb-1 fw-bold">MATCH KILLS</small>
+                            <input type="number" class="form-control text-center pop-stat-input" id="edit_kills" name="kills" required>
+                        </div>
+
+                        <div class="col-3">
+                            <small class="text-white-50 d-block mb-1 fw-bold">MATCH ACS</small>
+                            <input type="number" class="form-control text-center pop-stat-input" id="edit_acs" name="acs" required>
+                        </div>
+
+                        <div class="col-3">
+                            <small class="text-white-50 d-block mb-1 fw-bold">K/D RATIO</small>
+                            <input type="number" step="0.01" class="form-control text-center pop-stat-input" id="edit_kd" name="kd_ratio" required>
+                        </div>
+
+                        <div class="col-3">
+                            <small class="text-white-50 d-block mb-1 fw-bold">HEADSHOT %</small>
+                            <div class="input-group">
+                                <input type="number" step="0.1"
+                                       class="form-control text-center pop-stat-input"
+                                       id="edit_headshot"
+                                       name="headshot_pct"
+                                       required>
+                                <span class="input-group-text fw-bold"
+                                      style="background: #1a2027; color: var(--fs-orange);
+                                             border: 1px solid rgba(255, 70, 85, 0.3);
+                                             border-left:none;">
+                                    %
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-center my-3">
+                        <h2 id="modalTitleName" class="fw-bold m-0 text-white"
+                            style="font-size: 2.5rem; letter-spacing: 1px;">
+                            PLAYER NAME
+                        </h2>
+
+                        <p class="small fw-bold"
+                           style="color: rgba(255, 255, 255, 0.85);
+                                  letter-spacing: 0.5px;">
+                            ⚡ ระบบจะอัปเดต Stats ตาม Match ที่เลือก + Profile พร้อมกัน
+                        </p>
+                    </div>
+
+                    <hr style="border-color: rgba(255,255,255,0.15);">
+
+                    <input type="hidden" id="edit_id" name="player_id">
+                    <input type="hidden" id="edit_old_image" name="old_image_url">
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label text-white-50">Game Nickname *</label>
+                            <input type="text" class="form-control" id="edit_nickname" name="nickname" required>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label text-white-50">Real Name</label>
+                            <input type="text" class="form-control" id="edit_realname" name="real_name">
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label text-white-50">Role</label>
+                            <input type="text" class="form-control" id="edit_role" name="role">
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label text-white-50">Main Agent</label>
+                            <input type="text" class="form-control" id="edit_agent" name="main_agent">
+                        </div>
+
+                        <div class="col-12 mb-2">
+                            <label class="form-label text-warning fw-bold">Change Profile Image</label>
+                            <input type="file" class="form-control" name="image_file" accept="image/*">
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-warning text-dark fw-bold px-4">SAVE ALL CHANGES</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+
+<!-- ADD PLAYER MODAL -->
+<div class="modal fade" id="addPlayerModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title text-danger fw-bold">ADD NEW PLAYER</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+
+            <form action="/player/add" method="POST" enctype="multipart/form-data">
+                <div class="modal-body p-4">
+                    <div class="mb-3">
+                        <label class="form-label">Game Nickname *</label>
+                        <input type="text" class="form-control" name="nickname" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Real Name</label>
+                        <input type="text" class="form-control" name="real_name">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Role</label>
+                        <input type="text" class="form-control" name="role">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Main Agent</label>
+                        <input type="text" class="form-control" name="main_agent">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Player Profile Image</label>
+                        <input type="file" class="form-control" name="image_file" accept="image/*">
+                    </div>
+                </div>
+
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger px-4">SAVE PLAYER</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    let currentCachedStats = [];
+
+    function openPlayerDetailModal(id, nickname, realName, role, agent, image) {
+        document.getElementById('edit_id').value = id;
+        document.getElementById('edit_nickname').value = nickname;
+        document.getElementById('edit_realname').value = realName;
+        document.getElementById('edit_role').value = role;
+        document.getElementById('edit_agent').value = agent;
+        document.getElementById('edit_old_image').value = image;
+        document.getElementById('modalTitleName').innerText = nickname;
+
+        let dropdown = document.getElementById('edit_stat_id');
+        dropdown.innerHTML = '<option value="">Loading matches...</option>';
+
+        clearStatInputs();
+
+        fetch('/api/player_all_stats/' + id)
+            .then(function(res) { return res.json(); })
+            .then(function(data) {
+                dropdown.innerHTML = '';
+
+                if (data.success && data.stats.length > 0) {
+                    currentCachedStats = data.stats;
+
+                    currentCachedStats.forEach(function(stat) {
+                        let option = document.createElement('option');
+                        option.value = stat.stat_id;
+
+                        let opponentName = stat.opponent ? stat.opponent : "Unknown Team";
+                        let tournamentName = stat.tournament_name ? stat.tournament_name : "Unknown Tournament";
+                        let tournamentTier = stat.tournament_tier ? stat.tournament_tier : "-";
+
+                        option.innerText = "Match #" + stat.match_id + " | " + tournamentName + " (" + tournamentTier + ") vs " + opponentName;
+                        dropdown.appendChild(option);
+                    });
+
+                    onMatchSelectionChange(currentCachedStats[0].stat_id);
+
+                } else {
+                    dropdown.innerHTML = '<option value="">No match history found</option>';
+                }
+            })
+            .catch(function() {
+                dropdown.innerHTML = '<option value="">Error loading data</option>';
+            });
+
+        var playerModal = new bootstrap.Modal(document.getElementById('playerDetailModal'));
+        playerModal.show();
+    }
+
+    function onMatchSelectionChange(selectedStatId) {
+        if (!selectedStatId) return;
+
+        let matchedData = currentCachedStats.find(function(item) {
+            return item.stat_id == selectedStatId;
+        });
+
+        if (matchedData) {
+            let opponentName = matchedData.opponent ? matchedData.opponent : "Unknown Team";
+
+            document.getElementById('edit_opponent').value = opponentName;
+            document.getElementById('opponent_display').innerText = opponentName;
+
+            let tName = matchedData.tournament_name ? matchedData.tournament_name : "Unknown Tournament";
+            let tTier = matchedData.tournament_tier ? matchedData.tournament_tier : "-";
+            let tLocation = matchedData.tournament_location ? matchedData.tournament_location : "-";
+
+            document.getElementById('tournament_display').innerText =
+                "🏆 Tournament: " + tName + " (" + tTier + ")";
+
+            document.getElementById('tournament_location_display').innerText =
+                "📍 Location: " + tLocation;
+
+            document.getElementById('edit_kills').value =
+                (matchedData.kills !== null && matchedData.kills !== undefined) ? matchedData.kills : 0;
+
+            document.getElementById('edit_acs').value =
+                (matchedData.acs !== null && matchedData.acs !== undefined) ? matchedData.acs : 0;
+
+            document.getElementById('edit_kd').value =
+                (matchedData.kd_ratio !== null && matchedData.kd_ratio !== undefined) ? matchedData.kd_ratio : 0;
+
+            document.getElementById('edit_headshot').value =
+                (matchedData.headshot_pct !== null && matchedData.headshot_pct !== undefined) ? matchedData.headshot_pct : 0;
+
+            updatePlayerCardStats(matchedData);
+
+            syncAllPlayersToMatch(matchedData.match_id);
+        }
+    }
+
+    function syncAllPlayersToMatch(matchId) {
+        fetch('/api/match_stats/' + matchId)
+            .then(function(res) { return res.json(); })
+            .then(function(data) {
+                if (!data.success) return;
+
+                data.stats.forEach(function(playerMatchData) {
+                    updatePlayerCardStats(playerMatchData);
+                });
+            })
+            .catch(function() {});
+    }
+
+    function updatePlayerCardStats(matchData) {
+        let playerId = matchData.player_id;
+
+        let tName = matchData.tournament_name ? matchData.tournament_name : "Tournament";
+        let tTier = matchData.tournament_tier ? matchData.tournament_tier : "-";
+
+        let opponentName = matchData.opponent ? matchData.opponent : "Unknown Team";
+
+        let matchText = "Match #" + matchData.match_id + " | " + tName + " (" + tTier + ") vs " + opponentName;
+
+        let matchEl = document.getElementById("card_match_" + playerId);
+        let killsEl = document.getElementById("card_kills_" + playerId);
+        let acsEl = document.getElementById("card_acs_" + playerId);
+        let kdEl = document.getElementById("card_kd_" + playerId);
+        let hsEl = document.getElementById("card_hs_" + playerId);
+
+        if (matchEl) matchEl.innerText = matchText;
+        if (killsEl) killsEl.innerText = (matchData.kills !== null && matchData.kills !== undefined) ? matchData.kills : "-";
+        if (acsEl) acsEl.innerText = (matchData.acs !== null && matchData.acs !== undefined) ? matchData.acs : "-";
+        if (kdEl) kdEl.innerText = (matchData.kd_ratio !== null && matchData.kd_ratio !== undefined) ? matchData.kd_ratio : "-";
+        if (hsEl) hsEl.innerText = (matchData.headshot_pct !== null && matchData.headshot_pct !== undefined) ? matchData.headshot_pct : "-";
+    }
+
+    function clearStatInputs() {
+        document.getElementById('edit_opponent').value = '';
+        document.getElementById('opponent_display').innerText = '-';
+
+        document.getElementById('tournament_display').innerText = '🏆 Tournament: -';
+        document.getElementById('tournament_location_display').innerText = '📍 Location: -';
+
+        document.getElementById('edit_kills').value = '';
+        document.getElementById('edit_acs').value = '';
+        document.getElementById('edit_kd').value = '';
+        document.getElementById('edit_headshot').value = '';
+    }
+</script>
+
+</body>
+</html>
